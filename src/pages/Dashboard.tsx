@@ -4,6 +4,28 @@ import { useServiceStore } from '../store/service-store';
 import { formatCurrency } from '../utils/currency-utils';
 import { formatDateTime, isToday } from '../utils/date-utils';
 
+/**
+ * Get icon for service based on service name
+ * @param serviceName - Name of the service
+ * @returns Emoji icon for the service
+ */
+const getServiceIcon = (serviceName: string): string => {
+  const name = serviceName.toLowerCase();
+  if (name.includes('barba') && name.includes('corte')) {
+    return '💈';
+  }
+  if (name.includes('barba')) {
+    return '🧔';
+  }
+  if (name.includes('infantil')) {
+    return '👶';
+  }
+  if (name.includes('masculino') || name.includes('corte')) {
+    return '✂️';
+  }
+  return '✂️';
+};
+
 export const Dashboard = () => {
   const { appointments } = useAppointmentStore();
   const { customers } = useCustomerStore();
@@ -112,7 +134,7 @@ export const Dashboard = () => {
         <div className="stats-grid">
           {services.map((service) => (
             <div key={service.id} className="stat-card">
-              <div className="stat-icon primary">✂️</div>
+              <div className="stat-icon primary">{getServiceIcon(service.name)}</div>
               <div className="stat-info">
                 <h4>{service.name}</h4>
                 <p>{formatCurrency(service.price)}</p>
