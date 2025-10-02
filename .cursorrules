@@ -1,0 +1,440 @@
+# Cursor Rules - Code Generation Guidelines
+
+## 🎯 General Principles
+
+- Write clean, maintainable, and well-documented code
+- Follow established design patterns and best practices
+- Prioritize readability and simplicity
+- Use TypeScript for type safety when applicable
+
+## 📝 Comments and Documentation
+
+### Critical Rules:
+
+- **ALL code comments MUST be in English**
+- **NO emojis in code comments**
+- **NO emojis in commit messages**
+- **ALL commit messages MUST be in English**
+- Keep comments professional and technical
+- Use clear, concise language
+- **Messages to user can be in Portuguese** (user preference)
+
+### Good Examples:
+
+```typescript
+// Calculate the total price including tax
+const totalPrice = basePrice * (1 + taxRate);
+
+/**
+ * Fetches user data from the API
+ * @param userId - The unique identifier for the user
+ * @returns Promise containing user data
+ */
+async function fetchUser(userId: string): Promise<User> {
+  // Implementation
+}
+```
+
+### Bad Examples (DO NOT USE):
+
+```typescript
+// 🚀 Calculate the total price including tax
+const totalPrice = basePrice * (1 + taxRate);
+
+// Busca os dados do usuário da API
+async function fetchUser(userId: string): Promise<User> {
+  // Implementation
+}
+```
+
+## 🏗️ Code Structure
+
+### TypeScript/JavaScript
+
+- Use functional components for React
+- Prefer arrow functions for consistency
+- Use `const` by default, `let` only when necessary
+- Avoid `var`
+- Use template literals for string concatenation
+- Destructure props and objects when possible
+
+### Naming Conventions
+
+- **Components**: PascalCase (e.g., `UserProfile`, `RecipeCard`)
+- **Functions**: camelCase (e.g., `fetchData`, `handleClick`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `API_URL`, `MAX_RETRY`)
+- **Files**: kebab-case for utilities, PascalCase for components
+- **Types/Interfaces**: PascalCase with descriptive names
+
+### File Organization
+
+```
+src/
+├── components/     # Reusable UI components
+├── pages/         # Page-level components
+├── hooks/         # Custom React hooks
+├── store/         # State management (Zustand, Redux, etc)
+├── utils/         # Utility functions
+├── types/         # TypeScript type definitions
+├── services/      # API calls and external services
+└── constants/     # App-wide constants
+```
+
+## 🎨 React Best Practices
+
+### Component Structure
+
+```typescript
+// Imports
+import { useState } from "react";
+import type { ComponentProps } from "./types";
+
+// Types/Interfaces
+interface MyComponentProps {
+  title: string;
+  onAction: () => void;
+}
+
+// Component
+export const MyComponent = ({ title, onAction }: MyComponentProps) => {
+  // Hooks
+  const [state, setState] = useState(false);
+
+  // Handlers
+  const handleClick = () => {
+    // Logic here
+  };
+
+  // Render
+  return <div>{/* JSX */}</div>;
+};
+```
+
+### Hooks Rules
+
+- Always declare hooks at the top level
+- Never call hooks conditionally
+- Use custom hooks to extract reusable logic
+- Name custom hooks with `use` prefix
+
+### State Management
+
+- Use Zustand for global state when possible
+- Keep state close to where it's used
+- Avoid prop drilling - use context or state management
+- Use immer patterns for complex state updates
+
+## 🔧 Zustand Guidelines
+
+```typescript
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+interface StoreState {
+  items: Item[];
+  addItem: (item: Item) => void;
+  removeItem: (id: string) => void;
+}
+
+export const useStore = create<StoreState>()(
+  persist(
+    (set) => ({
+      items: [],
+
+      addItem: (item) =>
+        set((state) => ({
+          items: [...state.items, item],
+        })),
+
+      removeItem: (id) =>
+        set((state) => ({
+          items: state.items.filter((item) => item.id !== id),
+        })),
+    }),
+    {
+      name: "app-storage",
+    }
+  )
+);
+```
+
+## 🎯 TypeScript Best Practices
+
+- Always define explicit return types for functions
+- Use `type` for unions and primitives, `interface` for objects
+- Avoid `any` - use `unknown` if type is truly unknown
+- Use type guards for runtime type checking
+- Leverage utility types: `Partial`, `Pick`, `Omit`, `Record`
+
+### Type Definitions
+
+```typescript
+// Use interface for objects
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+// Use type for unions and aliases
+type Status = "pending" | "active" | "completed";
+type UserWithStatus = User & { status: Status };
+
+// Use generics for reusable types
+interface ApiResponse<T> {
+  data: T;
+  error?: string;
+  timestamp: Date;
+}
+```
+
+## 🚀 Performance Optimization
+
+- Use React.memo() for expensive components
+- Implement useMemo() and useCallback() when appropriate
+- Lazy load components and routes
+- Optimize images and assets
+- Avoid inline function definitions in JSX when possible
+
+## 🧪 Testing Principles
+
+- Write tests in English
+- Use descriptive test names
+- Follow AAA pattern: Arrange, Act, Assert
+- Mock external dependencies
+- Test user behavior, not implementation details
+
+## 🔒 Security
+
+- Never commit sensitive data (API keys, tokens)
+- Validate and sanitize user input
+- Use environment variables for configuration
+- Implement proper error handling
+- Follow OWASP guidelines
+
+## 📦 Dependencies
+
+- Keep dependencies up to date
+- Review security vulnerabilities regularly
+- Prefer well-maintained libraries
+- Consider bundle size impact
+- Document why each dependency is needed
+
+## 🌐 Web Development Specifics
+
+### Auto-Monitoring (MANDATORY)
+
+- **ALWAYS use Puppeteer MCP after editing front-end code**
+- Automatically verify:
+  - Page loads correctly
+  - No JavaScript errors
+  - Console.logs captured and analyzed
+  - Performance metrics
+  - Store state integrity
+  - Component rendering
+- Report findings proactively
+
+### MCP Usage Requirements (MANDATORY)
+
+Always use appropriate MCPs proactively. Never ask for permission to use them.
+
+#### Sequential Thinking MCP
+
+- **When**: Complex problems, multi-step reasoning, planning
+- **Use for**: Breaking down problems, designing architecture, debugging logic
+- **Example**: Planning a new feature implementation
+
+#### GitHub MCP
+
+- **When**: Any Git/GitHub operation
+- **Use for**: Create repos, issues, PRs, push code, search repos
+- **Example**: After completing a feature, create PR automatically
+
+#### Brave Search MCP
+
+- **When**: Need current information, research, documentation lookup
+- **Use for**: Finding libraries, checking latest versions, researching solutions
+- **Example**: Looking up best practices for a specific technology
+
+#### Context7 MCP
+
+- **When**: Need library documentation
+- **Use for**: Fetching up-to-date docs for libraries (React, Next.js, etc)
+- **Example**: Getting latest API documentation for a framework
+
+#### Puppeteer MCP (CRITICAL for Web Development)
+
+- **When**: After ANY front-end code change
+- **Use for**: Navigate pages, capture console.logs, screenshots, interact with UI
+- **Example**: Verify app works after editing components
+- **Required**: Run after every edit to web apps
+
+#### Playwright MCP
+
+- **When**: Cross-browser testing needed
+- **Use for**: Testing in Chrome, Firefox, Safari
+- **Example**: Verifying compatibility across browsers
+
+#### Memory MCP
+
+- **When**: User shares preferences or important info
+- **Use for**: Remember user preferences, project conventions, frequent patterns
+- **Example**: Storing user's preferred libraries or coding style
+
+#### SQLite/Postgres MCP
+
+- **When**: Database operations needed
+- **Use for**: Query databases, inspect schemas, debug SQL
+- **Example**: Checking database state during development
+
+#### Filesystem MCP
+
+- **When**: Need to read files outside workspace
+- **Use for**: Accessing files in other directories
+- **Example**: Reading config files from system locations
+
+#### Fetch MCP
+
+- **When**: Need to fetch data from APIs
+- **Use for**: Testing APIs, downloading resources
+- **Example**: Verifying API endpoints work correctly
+
+#### Google Drive MCP
+
+- **When**: Need to access Google Drive files
+- **Use for**: Reading/writing Drive documents
+- **Example**: Syncing documentation with Drive
+
+#### Slack MCP
+
+- **When**: Team communication needed
+- **Use for**: Sending notifications, updates
+- **Example**: Notifying team of deployment
+
+#### Google Maps MCP
+
+- **When**: Location-based features
+- **Use for**: Geocoding, maps integration
+- **Example**: Adding location features to app
+
+#### Everart MCP
+
+- **When**: Need AI-generated images
+- **Use for**: Creating placeholder images, assets
+- **Example**: Generating hero images for projects
+
+#### Sentry MCP
+
+- **When**: Error monitoring needed
+- **Use for**: Tracking errors, monitoring issues
+- **Example**: Checking production errors
+
+### MCP Workflow Examples
+
+#### After Editing Front-End Code:
+
+```typescript
+// 1. Navigate to app
+mcp_puppeteer_puppeteer_navigate({ url: "http://localhost:PORT" });
+
+// 2. Check for errors
+mcp_puppeteer_puppeteer_evaluate({ script: ERROR_CHECK_SCRIPT });
+
+// 3. Capture screenshot
+mcp_puppeteer_puppeteer_screenshot({ name: "verification" });
+
+// 4. Report status to user
+```
+
+#### Starting New Project:
+
+```typescript
+// 1. Research best practices
+mcp_brave-search_brave_web_search({ query: "React best practices 2024" });
+
+// 2. Get library docs
+mcp_context7_get-library-docs({ context7CompatibleLibraryID: "/vercel/next.js" });
+
+// 3. Create repository
+mcp_github_create_repository({ name: "project-name", description: "..." });
+
+// 4. Remember project preferences
+mcp_memory_create_entities({ entities: [{ name: "ProjectPreferences", ... }] });
+```
+
+#### Complex Problem Solving:
+
+```typescript
+// 1. Use sequential thinking
+mcp_sequential -
+  thinking_sequentialthinking({
+    thought: "Breaking down the authentication flow...",
+    thoughtNumber: 1,
+    totalThoughts: 5,
+  });
+
+// 2. Research solutions
+mcp_brave -
+  search_brave_web_search({ query: "JWT authentication best practices" });
+
+// 3. Implement and verify
+// ... code implementation ...
+mcp_puppeteer_puppeteer_navigate({ url: "http://localhost:3000/login" });
+```
+
+### Console.logs Monitoring
+
+- After any front-end code change, run:
+  ```typescript
+  mcp_puppeteer_puppeteer_navigate({ url: "http://localhost:PORT" });
+  mcp_puppeteer_puppeteer_evaluate({ script: CONSOLE_CAPTURE_SCRIPT });
+  mcp_puppeteer_puppeteer_screenshot({ name: "verification" });
+  ```
+- Report any errors found immediately
+- Suggest fixes proactively
+
+### Non-Interactive Commands
+
+- Always use non-interactive flags in commands
+- Examples: `--yes`, `--no-verify`, `--force` (when appropriate)
+- See `docs/NON-INTERACTIVE-COMMANDS.md` for reference
+
+## 💻 Git Commit Messages
+
+- Use conventional commits format
+- **NO emojis in commit messages**
+- **ALL commit messages in English**
+- Examples:
+  - `feat: add dark mode toggle`
+  - `fix: resolve memory leak in useEffect`
+  - `docs: update API documentation`
+  - `refactor: simplify authentication logic`
+  - `chore: update dependencies`
+  - `test: add unit tests for auth flow`
+
+## 🎨 CSS/Styling
+
+- Use CSS modules or styled-components for scoping
+- Follow BEM naming for vanilla CSS
+- Use CSS variables for theming
+- Mobile-first responsive design
+- Prefer flexbox and grid over floats
+
+## ✅ Before Committing
+
+- [ ] All comments are in English
+- [ ] All commit messages are in English
+- [ ] No emojis in code comments
+- [ ] No emojis in commit messages
+- [ ] Code is properly typed (TypeScript)
+- [ ] No console.logs left in code
+- [ ] Functions have proper documentation
+- [ ] Code follows project structure
+- [ ] Tests pass (if applicable)
+- [ ] No linter errors
+- [ ] Web app verified with Puppeteer MCP (if applicable)
+- [ ] Console.logs checked for errors
+
+---
+
+**Remember**: Code is read more than it's written. Prioritize clarity and maintainability!
