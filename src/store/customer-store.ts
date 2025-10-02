@@ -1,10 +1,12 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { Customer } from '../types';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { Customer } from "../types";
 
 interface CustomerStore {
   customers: Customer[];
-  addCustomer: (customer: Omit<Customer, 'id' | 'createdAt' | 'totalVisits'>) => void;
+  addCustomer: (
+    customer: Omit<Customer, "id" | "createdAt" | "totalVisits">
+  ) => void;
   updateCustomer: (id: string, customer: Partial<Customer>) => void;
   deleteCustomer: (id: string) => void;
   getCustomerById: (id: string) => Customer | undefined;
@@ -59,8 +61,7 @@ export const useCustomerStore = create<CustomerStore>()(
         })),
     }),
     {
-      name: 'customer-storage',
+      name: "customer-storage",
     }
   )
 );
-
